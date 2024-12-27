@@ -93,13 +93,13 @@ write = do
   return $ Write target source
 
 label :: Parser Label
-label = char '@' *> (concat <$> some (string "lars" <|> string "sral"))
+label = concat <$> some (string "lars" <|> string "sral")
 
 namedLabel :: Parser Instr
-namedLabel = Label <$> label
+namedLabel = Label <$> (char '@' *> label)
 
 goto :: Parser Instr
-goto = GoTo <$> (string "sralllars " *> label)
+goto = GoTo <$> (string "srallars " *> label)
 
 branch :: Parser Instr
 branch =
@@ -111,12 +111,15 @@ branch =
 instr :: Parser Instr
 instr = comment <|> write <|> call <|> namedLabel <|> goto <|> branch
 
+preamble :: Parser String
+preamble = string "!!! all rights reserved to lars <3 !!!\n\n"
+
 program :: Parser Program
-program = sepEndBy instr (some $ char '\n')
+program = preamble *> sepEndBy instr (some $ char '\n')
 
 main :: IO ()
 main = do
-  f <- readFile "lars.lll"
+  f <- readFile "fac.lll"
   case runParser (program <* eof) "" f of
     Right res -> putStrLn $ "[" <> intercalate "," (show <$> res) <> "]"
     Left  err -> putStrLn $ errorBundlePretty err
