@@ -28,9 +28,9 @@ nur primzahlen eingeben (als emoji)
 	unten geskippt
 
 ```
-erster kommentar
-lars zweite Kommentar
-larslars dritter Kommentar
+lars erster kommentar
+larslars zweite Kommentar
+larslarslars dritter Kommentar
 
 write 10 into address 0
 0lars10
@@ -58,8 +58,8 @@ srallars lars
 
 check if 0 at address 10 if true goto fst
 
-larsORsral 10 larssral
+lars|sral 10 larssral
 
 check ifnot 0 at address 10 if true goto fst
 
-sralORlars 10 lars
+sral|lars 10 lars

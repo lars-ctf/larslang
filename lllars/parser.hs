@@ -1,4 +1,5 @@
 import           Data.Functor                   ( ($>) )
+import           Data.List                      ( intercalate )
 import           Data.Void
 import           Text.Megaparsec         hiding ( Label
                                                 , Pos
@@ -14,21 +15,52 @@ type Address = Int
 type Label = String
 
 data Access = Access Address | SAccess Access
-  deriving Show
 data Operation = ADD | MUL | SUB | DIV | AND | OR | XOR
   deriving Show
 data Addressation = Address Access | BinaryOperation Access Operation Access
-  deriving Show
 data Call = WriteCall | ReadCall
   deriving Show
 data BranchPolarity = IfTrue | IfFalse
   deriving Show
 data Instr = Comment String | Write Address Addressation | LarsCall Call | Label Label | GoTo Label | Branch BranchPolarity Address Label
-  deriving Show
+
+instance Show Access where
+  show (Access  address) = "{ \"address\": " <> show address <> " }"
+  show (SAccess access ) = "{ \"sAddress\": " <> show access <> " }"
+
+instance Show Addressation where
+  show (Address access) = "{ \"access\": " <> show access <> " }"
+  show (BinaryOperation a op b) =
+    "{ \"binaryOperation\": { \"a\": "
+      <> show a
+      <> ", \"op\": \""
+      <> show op
+      <> "\", \"b\": "
+      <> show b
+      <> " }}"
+
+instance Show Instr where
+  show (Comment string) = "{ \"comment\": \"" <> string <> "\" }"
+  show (Write target source) =
+    "{ \"write\": { \"target\": "
+      <> show target
+      <> ", \"source\": "
+      <> show source
+      <> " }}"
+  show (LarsCall call ) = "{ \"call\": " <> show call <> " }"
+  show (Label    label) = "{ \"label\": " <> show label <> " }"
+  show (GoTo     label) = "{ \"goto\": " <> show label <> " }"
+  show (Branch pol jmp label) =
+    "{ \"branch\": { \"polarity\": "
+      <> show pol
+      <> ", \"jmp\": "
+      <> show jmp
+      <> ", \"label\": "
+      <> show label
+      <> "}}"
 
 comment :: Parser Instr
-comment =
-  Comment <$> (some (string "lars") *> many (satisfy $ not . (== '\n')))
+comment = Comment <$> (some (string "lars") *> many (satisfy (/= '\n')))
 
 access :: Parser Access
 access = (SAccess <$> (string "sral" *> access)) <|> (Access <$> L.decimal)
@@ -84,7 +116,7 @@ program = sepEndBy instr (some $ char '\n')
 
 main :: IO ()
 main = do
-  f <- readFile "lars.lars"
+  f <- readFile "lars.lll"
   case runParser (program <* eof) "" f of
-    Right res -> print res
+    Right res -> putStrLn $ "[" <> intercalate "," (show <$> res) <> "]"
     Left  err -> putStrLn $ errorBundlePretty err
