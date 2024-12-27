@@ -1,0 +1,65 @@
+zehnah
+
+oft lars
+
+pointer
+
+no typen
+
+strongly typed (alles lars)
+
+no typecheck
+
+structs? no?
+
+immutable außer pointed
+
+lars is 37 bit
+
+larscalls (8159 DECT)
+	bei 8159 write: larscall (arguments in lars object)
+	read (QS of "read" in 36-base times "lars"): result in 8159
+	write (QS of "write" in 36-base times "lars")
+	jump (address)
+
+comments
+
+nur primzahlen eingeben (als emoji)
+	unten geskippt
+
+```
+erster kommentar
+lars zweite Kommentar
+larslars dritter Kommentar
+
+write 10 into address 0
+0lars10
+
+read value of at adress 0 in addres 10
+10larssral0
+
+read value at addres at adress 0 plus ten (sral binds hardest) in addres 10
+10larssralsral0+10
+
+make systemcall with 37bit value at address 8159
+larssral <lars|sral>
+
+fst goto label
+@lars
+
+snd goto label
+@larssral
+
+thrd goto label
+@larssrallars
+
+goto fst label
+srallars lars
+
+check if 0 at address 10 if true goto fst
+
+larsORsral 10 larssral
+
+check ifnot 0 at address 10 if true goto fst
+
+sralORlars 10 lars
