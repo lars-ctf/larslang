@@ -63,3 +63,7 @@ lars|sral 10 larssral
 check ifnot 0 at address 10 if true goto fst
 
 sral|lars 10 lars
+
+CYCLIC REDUNDANCY CHECK:
+	redundancy: runs in THREE parallel runtimes (evil, haskell comp, kotlin comp) and compare results
+	cyclic: recompilation from c to lars and back, n times, until 1GB(?) filesize

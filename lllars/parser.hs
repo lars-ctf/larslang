@@ -126,11 +126,11 @@ branch =
 instr :: Parser Instr
 instr = try comment <|> write <|> call <|> namedLabel <|> goto <|> branch
 
-preamble :: Parser String
-preamble = string "!!! all rights reserved to lars <3 !!!\n\n"
+license :: Parser String
+license = string "!!! all rights reserved to lars <3 !!!\n\n"
 
 program :: Parser Program
-program = preamble *> sepEndBy instr (some $ char '\n')
+program = license *> sepEndBy instr (some $ char '\n')
 
 type EvalState = HashMap Address Int
 
@@ -159,7 +159,6 @@ evalAddressation (BinaryOperation a operator b) = do
   resB <- evalAccess b
   return $ evilOperation resA operator resB
 
--- data Instr = Comment String | Write Address Addressation | LarsCall Call | Label Label | GoTo Label | Branch BranchPolarity Address Label
 eval :: Int -> Program -> State EvalState ()
 eval n p = go (drop n p)
  where
@@ -189,13 +188,71 @@ eval n p = go (drop n p)
       _ -> go ps
   go [] = return ()
 
+compileOperation :: String -> Operator -> String -> String
+compileOperation a ADD b = a <> " + " <> b
+compileOperation a MUL b = a <> " * " <> b
+compileOperation a SUB b = a <> " - " <> b
+compileOperation a DIV b = a <> " / " <> b
+compileOperation a AND b = a <> " & " <> b
+compileOperation a OR  b = a <> " | " <> b
+compileOperation a XOR b = a <> " ^ " <> b
+
+compileAccess :: Access -> String
+compileAccess (Access  address) = show address
+compileAccess (SAccess access ) = "heap[" <> compileAccess access <> "]"
+
+compileAddressation :: Addressation -> String
+compileAddressation (Address access) = compileAccess access
+compileAddressation (BinaryOperation a operator b) =
+  compileOperation (compileAccess a) operator (compileAccess b)
+
+compile :: Program -> String
+compile ((Comment comment) : ps) = "// " <> comment <> "\n" ++ compile ps
+compile ((Write address addressation) : ps) =
+  "heap["
+    <> show address
+    <> "] = "
+    <> compileAddressation addressation
+    <> ";\n"
+    ++ compile ps
+compile ((LarsCall call ) : ps) = compile ps -- TODO
+compile ((Label    label) : ps) = "" <> label <> ":\n" ++ compile ps
+compile ((GoTo     label) : ps) = "goto " <> label <> ";\n" ++ compile ps
+compile ((Branch IfTrue access label) : ps) =
+  "if ("
+    <> compileAccess access
+    <> ")"
+    <> " goto "
+    <> label
+    <> ";\n"
+    ++ compile ps
+compile ((Branch IfFalse access label) : ps) =
+  "if (!("
+    <> compileAccess access
+    <> "))"
+    <> " goto "
+    <> label
+    <> ";\n"
+    ++ compile ps
+compile [] = ""
+
+preamble :: String
+preamble =
+  "#include <stdio.h>\nint main(int argc, char *argv[]) { unsigned int heap[10000] = { 0 }; "
+
+postamble :: String
+postamble = "printf(\"%x\\n\", heap[8159]); }"
+
+preamblify :: String -> String
+preamblify amble = preamble ++ amble ++ postamble
+
 main :: IO ()
 main = do
   f <- readFile "fac.lll"
   case runParser (program <* many (char '\n') <* eof) "" f of
     Right ps -> do
-      print ps
-      let ev = runState (eval 0 ps) M.empty
-      print ev
+      -- let ev = runState (eval 0 ps) M.empty
+      -- print ev
+      putStrLn $ preamblify $ compile ps
       -- putStrLn $ "[" <> intercalate "," (show <$> ps) <> "]"
     Left err -> putStrLn $ errorBundlePretty err
