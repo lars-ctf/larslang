@@ -1,12 +1,12 @@
 !!! all rights reserved to lars <3 !!!
 
 lars initial values: @0 is n, @1 is result
-0lars255
+0lars50
 1lars1
 
 larslars loop
 @lars
-lars|sral 0 sral
+sral|lars sral0 sral
 1larssral1*sral0
 0larssral0-1
 srallars lars
@@ -14,4 +14,4 @@ srallars lars
 larslarslars end: print number
 @sral
 8159larssral1
-larssral 
+larssral lars
