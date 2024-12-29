@@ -95,7 +95,7 @@ call =
   LarsCall
     <$> (  string "larssral"
         *> space
-        *> ((string "lars" $> ReadCall) <|> (string "sral" $> WriteCall))
+        *> ((string "lars" $> WriteCall) <|> (string "sral" $> ReadCall))
         )
 
 write :: Parser Instr
@@ -215,6 +215,8 @@ compile ((Write address addressation) : ps) =
     <> compileAddressation addressation
     <> ";\n"
     ++ compile ps
+compile ((LarsCall WriteCall) : ps) =
+  "printf(\"%x\", heap[8159]); " ++ compile ps
 compile ((LarsCall call ) : ps) = compile ps -- TODO
 compile ((Label    label) : ps) = "" <> label <> ":\n" ++ compile ps
 compile ((GoTo     label) : ps) = "goto " <> label <> ";\n" ++ compile ps
@@ -241,7 +243,7 @@ preamble =
   "#include <stdio.h>\nint main(int argc, char *argv[]) { unsigned int heap[10000] = { 0 }; "
 
 postamble :: String
-postamble = "printf(\"%x\\n\", heap[8159]); }"
+postamble = "printf(\"amen lars\\n\"); }"
 
 preamblify :: String -> String
 preamblify amble = preamble ++ amble ++ postamble

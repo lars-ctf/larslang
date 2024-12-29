@@ -87,7 +87,7 @@ call =
   LarsCall
     <$> (  string "larssral"
         *> space
-        *> ((string "lars" $> ReadCall) <|> (string "sral" $> WriteCall))
+        *> ((string "lars" $> WriteCall) <|> (string "sral" $> ReadCall))
         )
 
 write :: Parser Instr
