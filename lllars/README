@@ -1,6 +1,6 @@
 low level lars (lllars)
 
-low level lars is the best programming to exsist, there will never be a better language (excluding high level lars of course).
+low level lars is the best programming to exist, there will never be a better language (excluding high level lars of course).
 
 !!! Documentation !!!
 
@@ -19,7 +19,7 @@ and outputs an ast to `input.json`. Don't be shy, take a look at this piece of a
 
 llltranspiler, transpiles the ast to a blazing fast low level intermediate language:
 
-$ java -jar llltranspiler/llltranspiler-1.0-SNAPSHOT.jar
+$ java -jar llltranspiler/llltranspiler-1.0-SNAPSHOT.jar input.json
 
 
 to run the programming
