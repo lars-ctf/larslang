@@ -1,3 +1,4 @@
+
 plugins {
     kotlin("jvm") version "2.1.0"
     kotlin("plugin.serialization") version "2.1.0"
@@ -5,6 +6,12 @@ plugins {
 
 group = "me.any"
 version = "1.0-SNAPSHOT"
+
+tasks.withType<Jar> {
+    manifest {
+        attributes["Main-Class"] =  "me.any.Main"
+    }
+}
 
 repositories {
     mavenCentral()

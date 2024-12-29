@@ -126,7 +126,7 @@ program = license *> sepEndBy instr (some $ char '\n')
 
 main :: IO ()
 main = do
-  f <- readFile "fac.lll"
+  f <- readFile "chal.lll"
   case runParser (program <* many (char '\n') <* eof) "" f of
     Right ps ->
       putStrLn
