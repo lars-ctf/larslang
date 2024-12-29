@@ -1,6 +1,7 @@
 import           Data.Functor                   ( ($>) )
 import           Data.List                      ( intercalate )
 import           Data.Void
+import           System.Environment
 import           Text.Megaparsec         hiding ( Label
                                                 , Pos
                                                 , label
@@ -124,13 +125,17 @@ license = string "!!! all rights reserved to lars <3 !!!\n\n"
 program :: Parser Program
 program = license *> sepEndBy instr (some $ char '\n')
 
+parseProgram :: String -> IO ()
+parseProgram p = case runParser (program <* many (char '\n') <* eof) "" p of
+  Right ps ->
+    putStrLn $ "{ \"instructions\": [" <> intercalate "," (show <$> ps) <> "]}"
+  Left err -> putStrLn $ errorBundlePretty err
+
 main :: IO ()
 main = do
-  f <- readFile "chal.lll"
-  case runParser (program <* many (char '\n') <* eof) "" f of
-    Right ps ->
-      putStrLn
-        $  "{ \"instructions\": ["
-        <> intercalate "," (show <$> ps)
-        <> "]}"
-    Left err -> putStrLn $ errorBundlePretty err
+  args <- getArgs
+  case args of
+    [file] -> do
+      p <- readFile file
+      parseProgram p
+    _ -> putStrLn "Wrong number of arguments"
