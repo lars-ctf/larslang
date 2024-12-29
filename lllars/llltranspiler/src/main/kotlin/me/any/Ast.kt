@@ -1,8 +1,5 @@
 package me.any
 
-import AccessSerializer
-import AddresationSerializer
-import InstructionSerializer
 import kotlinx.serialization.Serializable
 
 @Serializable(with = AccessSerializer::class)
@@ -31,13 +28,13 @@ data class BinaryOperation(
     val right: Access
 ) : Addresation
 
-interface SysCall
+interface SysCall : Instruction
 
 class WriteSysCall : SysCall
 class ReadSysCall : SysCall
 
 enum class BranchPolarity {
-    IFTRUE, IFFALSE
+    IfTrue, IfFalse
 }
 
 @Serializable(with = InstructionSerializer::class)
@@ -59,7 +56,7 @@ data class Label(val label: String) : Instruction
 data class GoTo(val label: String) : Instruction
 
 @Serializable
-data class Branch(val polarity: BranchPolarity, val address: Address, val label: String) : Instruction
+data class Branch(val polarity: BranchPolarity, val address: Access, val label: String) : Instruction
 
 @Serializable
 data class Program(val instructions: List<Instruction>)

@@ -1,1 +1,27 @@
 low level lars (lllars)
+
+low level lars is the best programming to exsist, there will never be a better language (excluding high level lars of course).
+
+!!! Documentation !!!
+
+Files should start with
+
+"!!! all rights reserved to lars <3 !!!"
+
+Everything else should be intuitive (espacially for lars)
+
+!!! Technical Details !!!
+lll is very good language thats why it uses two programming language (because two is better than one). `parser.hs` parses a file:
+
+$ runhaskell parser.hs lars.lll > input.json
+
+and outputs an ast to `input.json`. Don't be shy, take a look at this piece of a(s/r)t.
+
+llltranspiler, transpiles the ast to a blazing fast low level intermediate language:
+
+$ java -jar llltranspiler/llltranspiler-1.0-SNAPSHOT.jar
+
+
+to run the programming
+
+$ cc out.c && ./a.out
